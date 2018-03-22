@@ -29,17 +29,29 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-
 	# Colors
 	RESET='\e[0m'
 	ORANGE='\e[38;5;202m'
+	LIGHT_GREEN='\e[38;5;118m'
 	YELLOW='\e[38;5;226m'
 	GREEN='\e[38;5;10m'
+	PEACH='\e[38;5;196m'
 
-	. /etc/bash_completion.d/git-prompt
+	set_active_venv() {
+		export ACTIVE_VENV=""
+		if [ "$VIRTUAL_ENV" != "" ]; then
+			export ACTIVE_VENV="\[${PEACH}\](${VIRTUAL_ENV##*/})\[${RESET}\]"
+		fi
+	}
+
+	source ~/.git-prompt.sh
+	export GIT_PS1_SHOWUNTRACKEDFILES=1
+	export GIT_PS1_SHOWUPSTREAM="auto"
 	export GIT_PS1_SHOWCOLORHINTS=1
 	export GIT_PS1_SHOWDIRTYSTATE=1
-	export PROMPT_COMMAND='__git_ps1 "\[${ORANGE}\]\u\[${RESET}\]:\[${YELLOW}\]\w\[${RESET}\]" " \[${GREEN}\]\\\$\[${RESET}\] "'
+	export VIRTUAL_ENV_DISABLE_PROMPT=1
+	PS1='__git_ps1 "${ACTIVE_VENV}\[${LIGHT_GREEN}\][\T]\[${ORANGE}\]\u\[${RESET}\]:\[${YELLOW}\]\w\[${RESET}\]" " \[${GREEN}\]\\\$\[${RESET}\] "'
+	export PROMPT_COMMAND="set_active_venv; ${PS1}; $PROMPT_COMMAND"
 fi
 
 # enable color support of ls and also add handy aliases
@@ -70,7 +82,7 @@ fi
 export PATH=$PATH:/usr/local/go/bin
 
 # Set Go workspace
-export GOPATH=$HOME/go_workspace
+export GOPATH=$HOME/go
 
 # Add GOPATH/bin to PATH
 export PATH=$PATH:$GOPATH/bin
