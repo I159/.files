@@ -21,3 +21,4 @@
 	pl = pull origin master
 	rmr = push origin --delete
 	po = push origin
+	s = status
