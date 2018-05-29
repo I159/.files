@@ -22,3 +22,4 @@
 	rmr = push origin --delete
 	po = push origin
 	s = status
+	d = diff
